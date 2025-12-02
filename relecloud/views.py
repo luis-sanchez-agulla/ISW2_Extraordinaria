@@ -56,24 +56,22 @@ class InfoRequestCreate(SuccessMessageMixin, generic.CreateView):
         response = super().form_valid(form)
 
         # Prepare confirmation email to send to the requester
-        subject = f"ReleCloud: information request received for {self.object.cruise}"
+        subject = f"ReleCloud: informacion del mail recibida para {self.object.cruise}"
         body = (
-            f"Hello {self.object.name},\n\n"
-            f"Thanks for requesting information about {self.object.cruise}. "
-            "We received your request and will contact you shortly.\n\n"
-            "Your notes:\n"
+            f"Hola {self.object.name},\n\n"
+            f"Gracias por solicitar información sobre {self.object.cruise}. "
+            "Hemos recibido su solicitud y nos pondremos en contacto con usted en breve.\n\n"
+            "Sus notas:\n"
             f"{self.object.notes}\n\n"
-            "Best regards,\nReleCloud team"
+            "Muchas gracias de parte de nuestro equipo"
         )
         from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', settings.EMAIL_HOST_USER if hasattr(settings, 'EMAIL_HOST_USER') else None)
         recipient_list = [self.object.email]
 
         try:
-            # send_mail will raise if configuration is incorrect or sending fails
             send_mail(subject, body, from_email, recipient_list, fail_silently=False)
-            messages.info(self.request, f"Confirmation email sent to {self.object.email}.")
+            messages.info(self.request, f"Email de confirmacion enviado a {self.object.email}.")
         except Exception as e:
-            # If sending fails, inform the user but still keep the saved request
-            messages.error(self.request, f"Could not send confirmation email: {e}")
+            messages.error(self.request, f"No se pudo enviar el email de confirmacion: {e}")
 
         return response

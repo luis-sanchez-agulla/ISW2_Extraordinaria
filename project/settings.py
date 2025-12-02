@@ -156,10 +156,29 @@ CRISPY_TEMPLATE_PACK = "bootstrap4"
 CSRF_TRUSTED_ORIGINS = ['https://jacobosw.azurewebsites.net']
 
 # Email configuration (use environment variables in production)
-EMAIL_BACKEND = os.getenv('DJANGO_EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')
-EMAIL_HOST = os.getenv('EMAIL_HOST', 'smtp.gmail.com')
-EMAIL_PORT = int(os.getenv('EMAIL_PORT', 587))
-EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '')
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
-EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'True') == 'True'
-DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER or 'webmaster@localhost')
+# Prefer environment variables; do NOT commit credentials in source code.
+# EMAIL_BACKEND = os.getenv('DJANGO_EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')
+# EMAIL_HOST = os.getenv('EMAIL_HOST', 'smtp.gmail.com')
+# # Ensure port is an int
+# EMAIL_PORT = int(os.getenv('EMAIL_PORT', '587'))
+# EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '')
+# EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
+# # Robust boolean parsing for TLS
+# EMAIL_USE_TLS = str(os.getenv('EMAIL_USE_TLS', 'True')).lower() in ('true', '1', 'yes')
+# DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER or 'webmaster@localhost')
+
+# # Development convenience: when DEBUG=True and no explicit backend set, use console backend
+# if DEBUG and os.getenv('DJANGO_EMAIL_BACKEND') is None:
+#     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# Configuración para enviar emails reales con Gmail
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'jacobopm05@gmail.com'
+EMAIL_HOST_PASSWORD = 'ujhjdwkaatjolyfv'
+
+# Remitente por defecto
+DEFAULT_FROM_EMAIL = 'jacobopm05@gmail.com'
+SERVER_EMAIL = 'jacobopm05@gmail.com'

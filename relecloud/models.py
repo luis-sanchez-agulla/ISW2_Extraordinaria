@@ -1,23 +1,22 @@
 from django.db import models
 
-# Create your models here.
 class Destination(models.Model):
-	name = models.CharField(
-		unique=True,
-		null=False,
-		blank=False,
-		max_length=50
-	)
-	description = models.TextField(
-		max_length=2000,
-		null=False,
-		blank=False
-	)
-def __str__(self):
+    name = models.CharField(
+        unique=True,
+        null=False,
+        blank=False,
+        max_length=50
+    )
+    description = models.TextField(
+        max_length=2000,
+        null=False,
+        blank=False
+    )
+    def __str__(self):
         return self.name
 
-def get_absolute_url(self):
-    return f"/destination/{self.pk}"
+    def get_absolute_url(self):
+        return f"/destination/{self.pk}"
 
 class Cruise(models.Model):
     name = models.CharField(
