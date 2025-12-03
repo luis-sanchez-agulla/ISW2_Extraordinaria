@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+Crear Reseña
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h2>Dejar una reseña</h2>
+
+            {% if cruise %}
+                <p class="text-muted">Crucero: <strong>{{ cruise.name }}</strong></p>
+            {% elif destination %}
+                <p class="text-muted">Destino: <strong>{{ destination.name }}</strong></p>
+            {% endif %}
+
+            <form method="post" class="mt-4">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <button type="submit" class="btn btn-primary mt-3">Enviar Reseña</button>
+                <a href="javascript:history.back()" class="btn btn-secondary mt-3">Cancelar</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
