@@ -1,20 +1,18 @@
-
-
 {% extends 'base.html' %}
 
 {% block title %}
-ReleCloud - {{ destination }}
+ReleCloud - {{ cruise }}
 {% endblock %}
 
 {% block content %}
-<h1>{{ destination }}</h1>
+<h1>{{ cruise }}</h1>
 <p>
-{{ destination.description }}
+{{ cruise.description }}
 </p>
-<p>You can explore {{ destination }} on the following cruises:</p>
-<ul class="list-group">
-    {% for cruise in destination.cruises.all %}
-    <a class="list-group-item list-group-item-action" href="{% url 'cruise_detail' cruise.id %}">{{ cruise }}</a>
+<p>You can explore the following destinations on this cruise:</p>
+<ul class="list-group mb-4">
+    {% for destination in cruise.destinations.all %}
+    <a class="list-group-item list-group-item-action" href="{% url 'destination_detail' destination.id %}">{{ destination }}</a>
     {% endfor %}
 </ul>
 
@@ -24,12 +22,12 @@ ReleCloud - {{ destination }}
 
 {% if user.is_authenticated %}
     {% if can_review %}
-        <a href="{% url 'review_destination' destination.id %}" class="btn btn-success mb-3">
+        <a href="{% url 'review_cruise' cruise.id %}" class="btn btn-success mb-3">
             + Dejar una reseña
         </a>
     {% elif user_review %}
         <div class="alert alert-warning" role="alert">
-            Ya has dejado una reseña para este destino.
+            Ya has dejado una reseña para este crucero.
         </div>
     {% endif %}
 {% else %}
