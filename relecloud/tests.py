@@ -135,3 +135,99 @@ class ReviewModelTests(TestCase):
             comment='Buen viaje'
         )
         self.assertIn(review, self.cruise.reviews.all())
+
+
+class ReviewEndpointTests(TestCase):
+    """Tests CRUD para endpoints de reviews"""
+
+    def setUp(self):
+        """Configurar datos de prueba"""
+        self.user = User.objects.create_user(
+            username='testuser',
+            email='test@example.com',
+            password='testpass123'
+        )
+        self.destination = Destination.objects.create(
+            name='Marte',
+            description='El planeta rojo'
+        )
+        self.cruise = Cruise.objects.create(
+            name='Viaje a Marte',
+            description='Crucero a Marte'
+        )
+        self.client.login(username='testuser', password='testpass123')
+
+    def test_create_review_destination_authenticated(self):
+        """Test: usuario autenticado puede crear reseña para destino"""
+        response = self.client.post(
+            f'/destination/{self.destination.id}/review/',
+            {
+                'rating': 5,
+                'title': 'Excelente destino',
+                'comment': 'Recomendado'
+            }
+        )
+        self.assertEqual(response.status_code, 302)  # Redirect after success
+        self.assertTrue(Review.objects.filter(user=self.user, destination=self.destination).exists())
+
+    def test_create_review_cruise_authenticated(self):
+        """Test: usuario autenticado puede crear reseña para crucero"""
+        response = self.client.post(
+            f'/cruise/{self.cruise.id}/review/',
+            {
+                'rating': 4,
+                'title': 'Buen crucero',
+                'comment': 'Buena experiencia'
+            }
+        )
+        self.assertEqual(response.status_code, 302)  # Redirect after success
+        self.assertTrue(Review.objects.filter(user=self.user, cruise=self.cruise).exists())
+
+    def test_cannot_create_duplicate_review_destination(self):
+        """Test: usuario no puede crear dos reseñas para el mismo destino"""
+        # Primera reseña
+        Review.objects.create(
+            user=self.user,
+            destination=self.destination,
+            rating=5,
+            title='Primera',
+            comment='Primera reseña'
+        )
+        # Intentar segunda reseña
+        response = self.client.post(
+            f'/destination/{self.destination.id}/review/',
+            {
+                'rating': 3,
+                'title': 'Segunda',
+                'comment': 'No permitida'
+            }
+        )
+        self.assertEqual(response.status_code, 403)  # Forbidden
+
+    def test_cannot_create_duplicate_review_cruise(self):
+        """Test: usuario no puede crear dos reseñas para el mismo crucero"""
+        # Primera reseña
+        Review.objects.create(
+            user=self.user,
+            cruise=self.cruise,
+            rating=5,
+            title='Primera',
+            comment='Primera reseña'
+        )
+        # Intentar segunda reseña
+        response = self.client.post(
+            f'/cruise/{self.cruise.id}/review/',
+            {
+                'rating': 3,
+                'title': 'Segunda',
+                'comment': 'No permitida'
+            }
+        )
+        self.assertEqual(response.status_code, 403)  # Forbidden
+
+    def test_unauthenticated_user_redirected_to_login(self):
+        """Test: usuario no autenticado es redirigido al login"""
+        self.client.logout()
+        response = self.client.get(f'/destination/{self.destination.id}/review/')
+        self.assertEqual(response.status_code, 302)  # Redirect to login
+        self.assertIn('/login/', response.url)
