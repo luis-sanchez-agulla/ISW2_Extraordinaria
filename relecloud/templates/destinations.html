@@ -21,6 +21,12 @@ If you can imagine it, we travel to it! Below is our list of confirmed destinati
             {% endif %}
         </div>
         <span>{{ destination }}</span>
+        {% if destination.avg_rating %}
+        <span class="badge bg-primary rounded-pill ms-auto">{{ destination.avg_rating|floatformat:1 }}</span>
+        <span class="badge bg-info rounded-pill ms-2">{{ destination.review_count }} reviews</span>
+        {% else %}
+        <span class="badge bg-secondary rounded-pill ms-auto">Sin valoraciones</span>
+        {% endif %}
     </a>
     {% endfor %}
 </ul>
