@@ -1,4 +1,5 @@
 from django.db import models
+from .validators import validate_image_extension, validate_image_size
 
 # Create your models here.
 class Destination(models.Model):
@@ -13,11 +14,19 @@ class Destination(models.Model):
 		null=False,
 		blank=False
 	)
-def __str__(self):
-        return self.name
+	image = models.ImageField(
+		upload_to='destinations/',
+		null=True,
+		blank=True,
+		validators=[validate_image_extension, validate_image_size],
+		help_text='Formatos permitidos: JPG, JPEG, PNG, WEBP. Tamaño máximo: 5MB'
+	)
+	
+	def __str__(self):
+		return self.name
 
-def get_absolute_url(self):
-    return f"/destination/{self.pk}"
+	def get_absolute_url(self):
+		return f"/destination/{self.pk}"
 
 class Cruise(models.Model):
     name = models.CharField(
