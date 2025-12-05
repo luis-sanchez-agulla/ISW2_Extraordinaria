@@ -1,5 +1,6 @@
 
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}
 ReleCloud - {{ destination }}
@@ -9,11 +10,11 @@ ReleCloud - {{ destination }}
 <h1>{{ destination }}</h1>
 {% if destination.image %}
     <div class="mb-4">
-        <img src="{{ destination.image.url }}" alt="{{ destination.name }}" class="img-fluid rounded" style="max-height: 400px; object-fit: cover;">
+        <img src="{{ destination.image.url }}" alt="Imagen de {{ destination.name }}" class="img-fluid rounded" style="max-height: 400px; object-fit: cover;">
     </div>
 {% else %}
-    <div class="mb-4 bg-light text-center p-5 rounded">
-        <p class="text-muted">No hay imagen disponible para este destino</p>
+    <div class="mb-4">
+        <img src="{% static 'res/img/placeholder-destination.svg' %}" alt="Imagen placeholder para {{ destination.name }}" class="img-fluid rounded" style="max-height: 400px; object-fit: cover;">
     </div>
 {% endif %}
 <p>
