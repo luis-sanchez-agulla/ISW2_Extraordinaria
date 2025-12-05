@@ -1,4 +1,6 @@
 from django.db import models
+from django.contrib.auth.models import User
+from django.core.validators import MinValueValidator, MaxValueValidator
 from .validators import validate_image_extension, validate_image_size
 
 # Create your models here.
