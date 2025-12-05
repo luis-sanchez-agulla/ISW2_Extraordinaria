@@ -9956,4 +9956,71 @@ body {
   background-color: rgba(192, 75, 242, 0.5) !important;
 }
 
+/* Estilos personalizados para imágenes de destinos */
+
+/* Thumbnails en lista de destinos */
+.destination-thumbnail {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 0.25rem;
+  border: 1px solid #dee2e6;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.destination-thumbnail:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.15);
+}
+
+/* Contenedor de thumbnail para mantener aspecto cuadrado */
+.destination-thumbnail-wrapper {
+  width: 80px;
+  height: 80px;
+  flex-shrink: 0;
+  margin-right: 1rem;
+  overflow: hidden;
+  border-radius: 0.25rem;
+}
+
+/* Imagen de detalle de destino */
+.destination-detail-image {
+  max-height: 400px;
+  width: 100%;
+  object-fit: cover;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+/* Responsive: En pantallas pequeñas, imagen más pequeña */
+@media (max-width: 768px) {
+  .destination-detail-image {
+    max-height: 300px;
+  }
+}
+
+/* Contenedor de imagen de detalle */
+.destination-detail-image-wrapper {
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+  border-radius: 0.5rem;
+}
+
+/* Placeholder con efecto similar */
+.destination-placeholder {
+  background-color: #e9ecef;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Lista de destinos: mejorar espaciado y hover */
+.list-group-item.destination-item {
+  transition: background-color 0.2s ease-in-out;
+}
+
+.list-group-item.destination-item:hover {
+  background-color: #f8f9fa;
+}
+
 /*# sourceMappingURL=theme.css.map */
