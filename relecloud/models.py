@@ -19,7 +19,7 @@ class Destination(models.Model):
 		null=True,
 		blank=True,
 		validators=[validate_image_extension, validate_image_size],
-		help_text='Formatos permitidos: JPG, JPEG, PNG, WEBP. Tamaño máximo: 5MB'
+		help_text='Formatos permitidos: JPG, JPEG, PNG, WEBP. Tamaño máximo: 20MB'
 	)
 	
 	def __str__(self):
