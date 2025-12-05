@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
+from .validators import validate_image_extension, validate_image_size, validate_image_dimensions
 
 class Destination(models.Model):
     name = models.CharField(
@@ -17,7 +18,13 @@ class Destination(models.Model):
     image = models.ImageField(
         upload_to='destinations/',
         null=True,
-        blank=True  
+        blank=True,
+        validators=[
+            validate_image_extension,
+            validate_image_size,
+            validate_image_dimensions
+        ],
+        help_text='Formato: JPG, PNG o WEBP. Máximo 5MB. Dimensiones: 300x300 a 2000x2000 píxeles'
     )
     def __str__(self):
         return self.name
