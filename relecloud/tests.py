@@ -138,3 +138,120 @@ class ImageValidatorTests(TestCase):
         
         with self.assertRaises(ValidationError):
             validate_image_size(large_file)
+
+
+class DestinationImageUITests(TestCase):
+    """Tests de integración para visualización de imágenes en UI"""
+    
+    def setUp(self):
+        """Configuración inicial: crear destinos con y sin imagen"""
+        # Crear imagen de prueba válida
+        self.test_image = SimpleUploadedFile(
+            name='test_paris.png',
+            content=b'\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00\x00\x00\x01\x08\x06\x00\x00\x00\x1f\x15\xc4\x89\x00\x00\x00\nIDATx\x9cc\x00\x01\x00\x00\x05\x00\x01\r\n-\xb4\x00\x00\x00\x00IEND\xaeB`\x82',
+            content_type='image/png'
+        )
+        
+        # Destino con imagen
+        self.destination_with_image = Destination.objects.create(
+            name='París',
+            description='La ciudad de la luz',
+            image=self.test_image
+        )
+        
+        # Destino sin imagen
+        self.destination_without_image = Destination.objects.create(
+            name='Londres',
+            description='Capital del Reino Unido'
+        )
+    
+    def tearDown(self):
+        """Limpiar archivos de imagen después de cada test"""
+        if self.destination_with_image.image:
+            self.destination_with_image.image.delete()
+    
+    def test_destination_list_shows_image_for_destination_with_image(self):
+        """Test: Lista muestra imagen real para destinos con imagen"""
+        response = self.client.get('/destinations/')
+        
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, self.destination_with_image.image.url)
+        self.assertContains(response, f'alt="Imagen de {self.destination_with_image.name}"')
+    
+    def test_destination_list_shows_placeholder_for_destination_without_image(self):
+        """Test: Lista muestra placeholder para destinos sin imagen"""
+        response = self.client.get('/destinations/')
+        
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'placeholder-destination.svg')
+        self.assertContains(response, f'alt="Imagen placeholder para {self.destination_without_image.name}"')
+    
+    def test_destination_detail_shows_image_with_correct_classes(self):
+        """Test: Detalle muestra imagen con clases CSS correctas"""
+        response = self.client.get(f'/destination/{self.destination_with_image.id}')
+        
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'destination-detail-image')
+        self.assertContains(response, self.destination_with_image.image.url)
+        self.assertContains(response, f'alt="Imagen de {self.destination_with_image.name}"')
+    
+    def test_destination_detail_shows_placeholder_with_correct_classes(self):
+        """Test: Detalle muestra placeholder con clases CSS correctas"""
+        response = self.client.get(f'/destination/{self.destination_without_image.id}')
+        
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'destination-detail-image')
+        self.assertContains(response, 'destination-placeholder')
+        self.assertContains(response, 'placeholder-destination.svg')
+    
+    def test_destination_list_thumbnail_has_correct_structure(self):
+        """Test: Thumbnails en lista tienen estructura HTML correcta"""
+        response = self.client.get('/destinations/')
+        
+        self.assertEqual(response.status_code, 200)
+        # Verificar que existe el wrapper
+        self.assertContains(response, 'destination-thumbnail-wrapper')
+        # Verificar que existe la clase thumbnail
+        self.assertContains(response, 'destination-thumbnail')
+        # Verificar que existe la clase de item
+        self.assertContains(response, 'destination-item')
+    
+    def test_all_destination_images_have_alt_text(self):
+        """Test: Todas las imágenes de destinos tienen atributo alt (accesibilidad)"""
+        # Test en lista: verificar que las imágenes de destinos tienen alt
+        response_list = self.client.get('/destinations/')
+        self.assertEqual(response_list.status_code, 200)
+        
+        # Verificar que las imágenes de destino tienen alt específico
+        self.assertContains(response_list, f'alt="Imagen de {self.destination_with_image.name}"')
+        self.assertContains(response_list, f'alt="Imagen placeholder para {self.destination_without_image.name}"')
+        
+        # Test en detalle
+        response_detail = self.client.get(f'/destination/{self.destination_with_image.id}')
+        self.assertEqual(response_detail.status_code, 200)
+        self.assertContains(response_detail, f'alt="Imagen de {self.destination_with_image.name}"')
+    
+    def test_destination_list_wrapper_maintains_dimensions(self):
+        """Test: Wrapper de thumbnail mantiene dimensiones consistentes"""
+        response = self.client.get('/destinations/')
+        
+        self.assertEqual(response.status_code, 200)
+        # El wrapper debe estar presente para mantener dimensiones
+        self.assertContains(response, 'destination-thumbnail-wrapper')
+        
+    def test_placeholder_svg_is_accessible(self):
+        """Test: SVG placeholder es accesible vía static files"""
+        from django.conf import settings
+        import os
+        
+        placeholder_path = os.path.join(
+            settings.BASE_DIR,
+            'relecloud',
+            'static',
+            'res',
+            'img',
+            'placeholder-destination.svg'
+        )
+        
+        # Verificar que el archivo existe
+        self.assertTrue(os.path.exists(placeholder_path))
