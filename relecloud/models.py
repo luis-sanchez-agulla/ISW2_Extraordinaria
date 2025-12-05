@@ -17,7 +17,7 @@ class Destination(models.Model):
     image = models.ImageField(
         upload_to='destinations/',
         null=True,
-        blank=True
+        blank=True  
     )
     def __str__(self):
         return self.name
