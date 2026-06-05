@@ -1,3 +1,5 @@
+# Django web application dependencies
+
 django>=5.0,<6.0
 django-crispy-forms>=2.0
 crispy-bootstrap4>=2024.1
