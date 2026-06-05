@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-y!rjq91k$sfr1!7+n1ym5$l552&z2u7%z!bmn)yq$m5wagt&'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True  # Temporal para ver por qué no cargan los archivos estáticos
+DEBUG = True  # Temporal
 
 ALLOWED_HOSTS = [
     'jacobosw.azurewebsites.net',
