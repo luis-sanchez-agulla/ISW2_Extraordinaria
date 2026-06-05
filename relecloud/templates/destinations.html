@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+ReleCloud - Destinations
+{% endblock %}
+
+{% block content %}
+<h1>Cruise destinations</h1>
+<p>
+If you can imagine it, we travel to it! Below is our list of confirmed destinations.
+</p>
+<ul class="list-group">
+    {% for destination in destinations %}
+    <a class="list-group-item list-group-item-action destination-item d-flex align-items-center" href="{% url 'destination_detail' destination.id %}">
+        <div class="destination-thumbnail-wrapper">
+            {% if destination.image %}
+                <img src="{{ destination.image.url }}" alt="Imagen de {{ destination.name }}" class="destination-thumbnail">
+            {% else %}
+                <img src="{% static 'res/img/placeholder-destination.svg' %}" alt="Imagen placeholder para {{ destination.name }}" class="destination-thumbnail destination-placeholder">
+            {% endif %}
+        </div>
+        <span>{{ destination }}</span>
+        {% if destination.avg_rating %}
+        <span class="badge bg-primary rounded-pill ms-auto">{{ destination.avg_rating|floatformat:1 }}</span>
+        <span class="badge bg-info rounded-pill ms-2">{{ destination.review_count }} reviews</span>
+        {% else %}
+        <span class="badge bg-secondary rounded-pill ms-auto">Sin valoraciones</span>
+        {% endif %}
+    </a>
+    {% endfor %}
+</ul>
+{% endblock content %}

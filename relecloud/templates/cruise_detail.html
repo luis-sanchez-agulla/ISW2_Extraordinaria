@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %}
+ReleCloud - {{ cruise }}
+{% endblock %}
+
+{% block content %}
+<h1>{{ cruise }}</h1>
+<p>
+{{ cruise.description }}
+</p>
+<p>You can explore the following destinations on this cruise:</p>
+<ul class="list-group mb-4">
+    {% for destination in cruise.destinations.all %}
+    <a class="list-group-item list-group-item-action" href="{% url 'destination_detail' destination.id %}">{{ destination }}</a>
+    {% endfor %}
+</ul>
+
+<!-- Sección de Reseñas -->
+<hr>
+<h3 class="mt-4 mb-3">Reseñas</h3>
+
+{% if user.is_authenticated %}
+    {% if can_review %}
+        <a href="{% url 'review_cruise' cruise.id %}" class="btn btn-success mb-3">
+            + Dejar una reseña
+        </a>
+    {% elif user_review %}
+        <div class="alert alert-warning" role="alert">
+            Ya has dejado una reseña para este crucero.
+        </div>
+    {% endif %}
+{% else %}
+    <div class="alert alert-info" role="alert">
+        <a href="{% url 'login' %}">Inicia sesión</a> para dejar una reseña.
+    </div>
+{% endif %}
+
+<!-- Puntuación Media -->
+<div class="alert alert-info mb-4">
+    <strong>Puntuación media:</strong>
+    {% if average_rating %}
+        <span class="badge bg-primary">{{ average_rating }}/5</span> ({{ review_count }} reseña{{ review_count|pluralize }})
+    {% else %}
+        <span class="text-muted">Sin reseñas aún</span>
+    {% endif %}
+</div>
+
+<!-- Lista de Reseñas -->
+{% if reviews %}
+    <div class="mt-4">
+        {% for review in reviews %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">
+                    {{ review.title }}
+                    <span class="badge bg-warning text-dark float-end">{{ review.rating }}/5 ⭐</span>
+                </h5>
+                <p class="card-text">{{ review.comment }}</p>
+                <small class="text-muted">
+                    Por <strong>{{ review.user.username }}</strong>
+                    el {{ review.created_at|date:"d/m/Y H:i" }}
+                </small>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <p class="text-muted">No hay reseñas aún. ¡Sé el primero en comentar!</p>
+{% endif %}
+{% endblock content %}
